@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Список Задач{% endblock %}
+{% block content %}
+<h1 class="mb-4">Список задач</h1>
+
+<form method="get" class="mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="category_filter" class="form-label">Фильтр по категории</label>
+            <select name="category" id="category_filter" class="form-select">
+                <option value="">Все категории</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id|stringformat:"s" == request.GET.category %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="search_input" class="form-label">Поиск по названию</label>
+            <input type="text" name="q" id="search_input" class="form-control" placeholder="Найти задачу..." value="{{ request.GET.q }}">
+        </div>
+        <div class="col-md-auto">
+            <button type="submit" class="btn btn-primary">Применить</button>
+        </div>
+    </div>
+</form>
+
+<ul class="list-group">
+    {% for task in tasks %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
+            <span class="badge bg-secondary rounded-pill">{{ task.category.name }}</span>
+        </li>
+    {% empty %}
+        <li class="list-group-item">Нет доступных задач.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
